@@ -1,0 +1,193 @@
+set shell := ["bash", "-lc"]
+
+# --- Rust quality ---
+
+fmt:
+  cargo fmt --all
+
+fmt-check:
+  cargo fmt --all -- --check
+
+check:
+  cargo check --workspace
+
+lint:
+  cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+test:
+  cargo test --workspace
+
+ci: fmt-check lint test
+
+# --- Cycle governance ---
+
+cycle-new *ARGS:
+  ./scripts/new_cycle_scaffold.sh {{ARGS}}
+
+cycle-refresh *ARGS:
+  ./scripts/refresh_cycle_governance.sh {{ARGS}}
+
+cycle-verify *ARGS:
+  ./scripts/verify_cycle_progress.sh {{ARGS}}
+
+cycle-compare-draft CYCLE_DIR REPORT1 REPORT2 *ARGS:
+  cargo run -p manager-plane --example draft_governance_notes -- comparison \
+    --run {{REPORT1}} --run {{REPORT2}} \
+    --out {{CYCLE_DIR}}/COMPARATIVE_NOTE.auto.md {{ARGS}}
+
+cycle-decision-draft CYCLE_DIR CYCLE_ID *REPORTS:
+  #!/usr/bin/env bash
+  args=""
+  for r in {{REPORTS}}; do args="$args --report $r"; done
+  cargo run -p manager-plane --example draft_governance_notes -- decision \
+    --cycle-id {{CYCLE_ID}} $args \
+    --out {{CYCLE_DIR}}/DECISION_NOTE.auto.md
+
+cycle-triage CYCLE_DIR:
+  @echo "Triage state for {{CYCLE_DIR}}:"
+  @grep -E "triage_state:|lifecycle_state:" {{CYCLE_DIR}}/CYCLE_README.md 2>/dev/null || echo "  No triage state found. Update CYCLE_README.md."
+  @echo ""
+  @echo "STATUS_MATRIX:"
+  @cat {{CYCLE_DIR}}/STATUS_MATRIX.auto.md 2>/dev/null || echo "  No STATUS_MATRIX.auto.md found. Run cycle-refresh first."
+
+cycle-freeze-check CYCLE_DIR:
+  @echo "Freeze state for {{CYCLE_DIR}}:"
+  @grep -E "frozen_now:|freeze_state:" {{CYCLE_DIR}}/CYCLE_README.md 2>/dev/null || echo "  No freeze info found."
+  @echo ""
+  @echo "Checking run contract compliance..."
+  @ls {{CYCLE_DIR}}/*.auto.md 2>/dev/null || echo "  No auto docs found."
+
+sync-experiment-docs:
+  ./scripts/sync_experiment_docs.sh
+
+# --- Run validation ---
+
+run-completeness CYCLE_DIR:
+  @echo "=== Run completeness check for {{CYCLE_DIR}} ==="
+  @echo ""
+  @echo "## Level 1 — Artifact completeness"
+  @test -f {{CYCLE_DIR}}/../../benchmarks/manifests/*.json 2>/dev/null && echo "  [ok] manifest found" || echo "  [FAIL] no manifest found"
+  @ls {{CYCLE_DIR}}/raw_output* 2>/dev/null && echo "  [ok] raw output found" || echo "  [warn] no raw output in cycle dir"
+  @ls {{CYCLE_DIR}}/*report* {{CYCLE_DIR}}/*REPORT* 2>/dev/null && echo "  [ok] report found" || echo "  [warn] no report in cycle dir"
+  @echo ""
+  @echo "## Level 2 — Method completeness"
+  @test -f {{CYCLE_DIR}}/CYCLE_README.md && echo "  [ok] CYCLE_README exists" || echo "  [FAIL] no CYCLE_README.md"
+  @echo ""
+  @echo "## Level 3 — Comparison readiness"
+  @test -f {{CYCLE_DIR}}/COMPARATIVE_NOTE.auto.md && echo "  [ok] comparative note exists" || echo "  [info] no comparative note yet"
+  @test -f {{CYCLE_DIR}}/STATUS_MATRIX.auto.md && echo "  [ok] status matrix exists" || echo "  [info] no status matrix yet"
+
+run-contract-check CYCLE_DIR:
+  @echo "Checking run contract for {{CYCLE_DIR}}..."
+  @echo "See docs/RUN_CONTRACT.md for full requirements."
+  @echo ""
+  @just run-completeness {{CYCLE_DIR}}
+
+run-lifecycle-update:
+  @echo "Run lifecycle states are tracked in CYCLE_README.md and STATUS_MATRIX.auto.md."
+  @echo "See docs/RUN_LIFECYCLE.md for valid transitions."
+  @echo "Update lifecycle_state in the relevant template manually or via cycle-refresh."
+
+# --- Agent session tracking ---
+
+agent-session-open SESSION_ID CYCLE_ID AGENT_ID OBJECTIVE:
+  #!/usr/bin/env bash
+  dir="docs/experiments/{{CYCLE_ID}}/sessions"
+  mkdir -p "$dir"
+  cat > "$dir/{{SESSION_ID}}.md" <<TEMPLATE
+  # Agent Session Log: {{SESSION_ID}}
+
+  ## Session metadata
+  - session_id: {{SESSION_ID}}
+  - cycle_id: {{CYCLE_ID}}
+  - opened_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  - closed_at:
+  - status: open
+  - agent_or_tool_identity: {{AGENT_ID}}
+  - operator_context: local IDE
+
+  ## Trace metadata
+  - trace_id:
+  - parent_session_id:
+  - step_id:
+  - tool_call_id:
+
+  ## Objective
+  - objective: {{OBJECTIVE}}
+  - requested_by: human
+  - related_hypothesis_or_task:
+
+  ## Files touched
+
+  ## Commands run
+
+  ## Output artifacts
+
+  ## Decisions and escalations
+
+  ## Integrity notes
+  - manifest_used:
+  - freeze_state_seen:
+  - did_methodology_change: no
+
+  ## Closing summary
+  - summary_of_work:
+  - next_legitimate_action:
+  - handoff_notes:
+  TEMPLATE
+  echo "Session log created: $dir/{{SESSION_ID}}.md"
+
+agent-session-step SESSION_FILE STEP COMMAND RESULT:
+  #!/usr/bin/env bash
+  echo "" >> {{SESSION_FILE}}
+  echo "### Step: {{STEP}}" >> {{SESSION_FILE}}
+  echo "- command: {{COMMAND}}" >> {{SESSION_FILE}}
+  echo "- result: {{RESULT}}" >> {{SESSION_FILE}}
+  echo "- timestamp: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> {{SESSION_FILE}}
+  echo "Step appended to {{SESSION_FILE}}"
+
+agent-session-close SESSION_FILE SUMMARY:
+  #!/usr/bin/env bash
+  sed -i '' "s/- status: open/- status: closed/" {{SESSION_FILE}} 2>/dev/null || sed -i "s/- status: open/- status: closed/" {{SESSION_FILE}}
+  sed -i '' "s/- closed_at:/- closed_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")/" {{SESSION_FILE}} 2>/dev/null || sed -i "s/- closed_at:/- closed_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")/" {{SESSION_FILE}}
+  sed -i '' "s/- summary_of_work:/- summary_of_work: {{SUMMARY}}/" {{SESSION_FILE}} 2>/dev/null || sed -i "s/- summary_of_work:/- summary_of_work: {{SUMMARY}}/" {{SESSION_FILE}}
+  echo "Session closed: {{SESSION_FILE}}"
+
+patch-ledger-add CYCLE_ID PATCH_ID HYPOTHESIS DIMENSION IMPACT:
+  #!/usr/bin/env bash
+  dir="docs/experiments/{{CYCLE_ID}}/patches"
+  mkdir -p "$dir"
+  cat > "$dir/{{PATCH_ID}}.md" <<TEMPLATE
+  # Patch Ledger: {{PATCH_ID}}
+
+  ## Patch entry
+  - patch_id: {{PATCH_ID}}
+  - related_cycle: {{CYCLE_ID}}
+  - opened_at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  - status: proposed
+
+  ## Hypothesis of patch
+  - hypothesis_of_patch: {{HYPOTHESIS}}
+  - expected_effect:
+
+  ## Affected dimension
+  - affected_dimension: {{DIMENSION}}
+  - version_impact: {{IMPACT}}
+
+  ## Touched files
+
+  ## Evidence that motivated patch
+
+  ## Execution and resulting status
+  - resulting_status:
+  - followup_required: no
+
+  ## Methodological impact
+  - rollback_needed: no
+  - invalidates_previous_runs: no
+  - requires_new_baseline: no
+
+  ## Human review
+  - requires_human_review: no
+  TEMPLATE
+  echo "Patch ledger created: $dir/{{PATCH_ID}}.md"

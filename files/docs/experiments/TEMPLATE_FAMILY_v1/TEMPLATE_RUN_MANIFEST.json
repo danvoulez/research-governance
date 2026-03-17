@@ -1,0 +1,25 @@
+{
+  "labels": {
+    "methodology": "",
+    "engine": "engine-v1",
+    "adapter": "adapter-v1",
+    "benchmark_spec": "benchmark-spec-v1",
+    "provider_selection": "provider-selection-v1",
+    "input_protocol": "input-protocol-v1",
+    "case_corpus": "case-corpus-v1",
+    "report_schema": "report-schema-v1"
+  },
+  "tracked_paths": {
+    "methodology": [],
+    "engine": [],
+    "adapter": [],
+    "benchmark_spec": [],
+    "provider_selection": [],
+    "input_protocol": [],
+    "case_corpus": [],
+    "report_schema": []
+  },
+  "notes": "",
+  "tags": [],
+  "registry_path": "benchmarks/version_registry.json"
+}

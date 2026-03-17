@@ -1,0 +1,46 @@
+{
+  "labels": {
+    "methodology": "cycle-3-persistence-v1",
+    "engine": "engine-v1",
+    "adapter": "adapter-v1",
+    "benchmark_spec": "benchmark-spec-v1",
+    "provider_selection": "provider-selection-frozen-fixtures-v1",
+    "input_protocol": "persistence-replay-protocol-v1",
+    "case_corpus": "case-corpus-replay-fixtures-v1",
+    "report_schema": "report-schema-v1"
+  },
+  "tracked_paths": {
+    "methodology": [
+      "docs/EXPERIMENT_CYCLES.md",
+      "docs/experiments/cycle-3/EXPERIMENT_CHARTER.md",
+      "docs/experiments/cycle-3/METHODOLOGY_SPEC.md",
+      "benchmarks/manifests/cycle-3-persistence-v1.json"
+    ],
+    "engine": [
+      "crates/epistemic-storage/src/lib.rs",
+      "crates/proof-runtime/src/lib.rs",
+      "crates/manager-plane/src/lib.rs"
+    ],
+    "provider_selection": [
+      "crates/manager-plane/src/proposer.rs",
+      "crates/manager-plane/examples/run_containment_benchmark.rs"
+    ],
+    "case_corpus": [
+      "benchmarks/reports/cycle-2-baseline-v1/gpt-5.4-2026-03-05-none.json",
+      "benchmarks/reports/cycle-2-adversarial-lane-v1/gpt-5.4-2026-03-05-none.json",
+      "benchmarks/reports/cycle-2-adversarial-lane-v2/gpt-5.4-2026-03-05-none.json"
+    ],
+    "input_protocol": [
+      "docs/experiments/cycle-3/METHODOLOGY_SPEC.md"
+    ]
+  },
+  "notes": "Cycle 3 focuses on persistence and replay equivalence. Frozen governed artifacts from prior cycles serve as replay fixtures while persistence lands in the runtime.",
+  "tags": [
+    "cycle-3",
+    "persistence",
+    "replay",
+    "equivalence",
+    "governed-state"
+  ],
+  "registry_path": "benchmarks/version_registry.json"
+}

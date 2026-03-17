@@ -1,0 +1,206 @@
+{
+  "dimensions": {
+    "adapter": [
+      {
+        "auto_revision": "adapter-r1",
+        "fingerprint": "b997242cfb568f8844759615f11f173c340c8260a97f20c41122bb867fa468cc",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "adapter-r2",
+        "fingerprint": "2a495968ecaf3e8f4d0993e2a8312670c8edaee9637f67943046a2ceeb136ffe",
+        "label": "adapter-v1",
+        "first_seen_unix_s": 1773670612
+      }
+    ],
+    "benchmark_spec": [
+      {
+        "auto_revision": "benchmark_spec-r1",
+        "fingerprint": "96873fa1f37267620091e3bf83aed4ffca8069bbb26047f002715f862f60f55d",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "benchmark_spec-r2",
+        "fingerprint": "cebb3cc1d24772dbb92e0716c30cab543e0812c4bf38d2d73a0a502c1eab285b",
+        "label": null,
+        "first_seen_unix_s": 1773670612
+      },
+      {
+        "auto_revision": "benchmark_spec-r3",
+        "fingerprint": "b6ca07a0cea88845e5813e4abcabc6512794753f5fddd6f668bbd956c6cd4e36",
+        "label": "benchmark-spec-v1",
+        "first_seen_unix_s": 1773671331
+      }
+    ],
+    "case_corpus": [
+      {
+        "auto_revision": "case_corpus-r1",
+        "fingerprint": "56f2b6e2e8b1116682361ef1997551254827669f0de2a32d3bda3893ba7b6d9b",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "case_corpus-r2",
+        "fingerprint": "19997161a9950aeb15beb5869d60eeffaa95f2bf139a4a994efa79bf83b51a1e",
+        "label": null,
+        "first_seen_unix_s": 1773669697
+      },
+      {
+        "auto_revision": "case_corpus-r3",
+        "fingerprint": "fd0317f47d96b10f679bb52f98c2ba86f2d82d367a39d2ff16c756f84b4ec0c0",
+        "label": null,
+        "first_seen_unix_s": 1773669858
+      },
+      {
+        "auto_revision": "case_corpus-r4",
+        "fingerprint": "88ad76bda8321a3dc0e6078323471eb0925b83968a69b362a5c99b353fff31a4",
+        "label": null,
+        "first_seen_unix_s": 1773670612
+      },
+      {
+        "auto_revision": "case_corpus-r5",
+        "fingerprint": "31749f7d099a93e06f6e3e050cb56fcff73496a80986ccc7d47f3a03f84c8037",
+        "label": "case-corpus-v1",
+        "first_seen_unix_s": 1773671331
+      },
+      {
+        "auto_revision": "case_corpus-r6",
+        "fingerprint": "f0dc1939707756beb92721a9042b3d3a5b3e377320e5ca8c24e330c7a8a2d9e1",
+        "label": "case-corpus-adversarial-c-v1",
+        "first_seen_unix_s": 1773671744
+      },
+      {
+        "auto_revision": "case_corpus-r7",
+        "fingerprint": "a3bd710e8086a0b6edc34cdd155c9ee5d49ac76d7ed5936e8a7c12437fd00f37",
+        "label": "case-corpus-adversarial-c-sabotage-v2",
+        "first_seen_unix_s": 1773674973
+      }
+    ],
+    "engine": [
+      {
+        "auto_revision": "engine-r1",
+        "fingerprint": "d432255a9d05ae4144f34272663b8969a8bac0f0f97c64ba781560493c5931b2",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "engine-r2",
+        "fingerprint": "da7f7522e0411e4ffc61120569341b5649000eb0b6ef161267ea50eb719c039e",
+        "label": "engine-v1",
+        "first_seen_unix_s": 1773670612
+      }
+    ],
+    "input_protocol": [
+      {
+        "auto_revision": "input_protocol-r1",
+        "fingerprint": "afbf1a05f351f80f9c7fc0515a2b29d42d77e3f9598d0ca798d30d15deaeb558",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "input_protocol-r2",
+        "fingerprint": "015d989557abb279b6576691a611f68c5cebfaec900ad5e253c3747a73b47126",
+        "label": null,
+        "first_seen_unix_s": 1773669858
+      },
+      {
+        "auto_revision": "input_protocol-r3",
+        "fingerprint": "bda956fb0e77ef73794e221e9b65f600871702c69c625266a7adbcf736a3ea2d",
+        "label": null,
+        "first_seen_unix_s": 1773670612
+      },
+      {
+        "auto_revision": "input_protocol-r4",
+        "fingerprint": "2fb1000da62f74b7583fc6ad7cd50d7d16ae9092d491e5402af16d622c1da6da",
+        "label": "input-protocol-v1",
+        "first_seen_unix_s": 1773671331
+      }
+    ],
+    "methodology": [
+      {
+        "auto_revision": "methodology-r1",
+        "fingerprint": "79aa01ef5d7c48e2e0119b2700c5c316f9b6358683fc2bf11919d4fefb3a05eb",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "methodology-r2",
+        "fingerprint": "2c2ced9c3b58bf730c5ac7de4bdf4ef3bee7a2e91981aed38dc5f80d017d057b",
+        "label": "cycle-1-v1",
+        "first_seen_unix_s": 1773671331
+      },
+      {
+        "auto_revision": "methodology-r3",
+        "fingerprint": "b301a0d5f17cb5f138b1774f5a7cfffff2192acdd74a4ffe16f091f1f948b1a3",
+        "label": "cycle-1-adversarial-lane-v1",
+        "first_seen_unix_s": 1773671744
+      },
+      {
+        "auto_revision": "methodology-r4",
+        "fingerprint": "25558d04d8a0ad900f7acc94e724d3f6a9512dbd32fb0209b313c3fae6a6bd27",
+        "label": "cycle-1-adversarial-lane-v2",
+        "first_seen_unix_s": 1773674973
+      },
+      {
+        "auto_revision": "methodology-r5",
+        "fingerprint": "95106c58af51d7d05de54b99217c720f13a2bc642bf8953a6a0659386324e95e",
+        "label": "cycle-2-baseline-v1",
+        "first_seen_unix_s": 1773680493
+      },
+      {
+        "auto_revision": "methodology-r6",
+        "fingerprint": "2c7561a0295568bda37527c46cc1692e783bf16fdf2aa25ea6b296c376d15b85",
+        "label": "cycle-2-adversarial-lane-v1",
+        "first_seen_unix_s": 1773681446
+      },
+      {
+        "auto_revision": "methodology-r7",
+        "fingerprint": "2c9ceb4f185766a9d7a53381a6dcde7c2a0561ad40b648a4b66c78b8ee7bc2df",
+        "label": "cycle-2-adversarial-lane-v2",
+        "first_seen_unix_s": 1773684659
+      }
+    ],
+    "provider_selection": [
+      {
+        "auto_revision": "provider_selection-r1",
+        "fingerprint": "a251cb1c8a560aa8f267ebf7cb2973e2c4145f74d62fe6c430568615b795e6ce",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "provider_selection-r2",
+        "fingerprint": "85f1b4f91b21a22e228e9ada399343d733b83220e7ed9481b19ef764505f8950",
+        "label": "provider-selection-v1",
+        "first_seen_unix_s": 1773671331
+      },
+      {
+        "auto_revision": "provider_selection-r3",
+        "fingerprint": "ccefdebc51d468045971818aa4e843f77cdc15e0e785bb87649750cd7ecd4328",
+        "label": "provider-selection-v1",
+        "first_seen_unix_s": 1773680655
+      }
+    ],
+    "report_schema": [
+      {
+        "auto_revision": "report_schema-r1",
+        "fingerprint": "fad4ab1afe9d0b7719b98a0882ed91f2e220beeca675c5e5198d3c59baf87910",
+        "label": null,
+        "first_seen_unix_s": 1773669683
+      },
+      {
+        "auto_revision": "report_schema-r2",
+        "fingerprint": "4f1cd065d1832f560244765e36b56a8f93c2a402a4276b01d05cbb2357f65871",
+        "label": null,
+        "first_seen_unix_s": 1773670612
+      },
+      {
+        "auto_revision": "report_schema-r3",
+        "fingerprint": "9709f8c23fc29d79e52dad1def7b9f5e99195813db67a60ed4c1fcfdbedb0850",
+        "label": "report-schema-v1",
+        "first_seen_unix_s": 1773671331
+      }
+    ]
+  }
+}
