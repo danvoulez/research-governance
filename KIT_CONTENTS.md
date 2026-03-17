@@ -10,8 +10,6 @@ Este pacote contem a camada de governanca de pesquisa reutilizavel mais madura e
 - `AGENTS.md` (entry point para LLM agents)
 - `COMO_INSTALAR_E_USAR.md`
 - `STATUS_DE_MODULARIDADE.md`
-- `KIT_ROADMAP.md`
-- `KIT_TASKLIST.md`
 - `KIT_CONTENTS.md`
 - `install.sh`
 
@@ -40,7 +38,15 @@ Este pacote contem a camada de governanca de pesquisa reutilizavel mais madura e
 - `scripts/` (4 scripts de ciclo)
 - `crates/manager-plane/examples/` (2 examples Rust)
 - `benchmarks/` (version registry + manifest exemplo)
-- `docs/` (templates originais + novos)
+- `docs/` (copia instalavel dos templates e protocolos — ver nota abaixo)
+
+## Sobre docs/ vs files/docs/
+
+`docs/` na raiz e a documentacao viva do kit — a versao canonica.
+`files/docs/` e a copia instalavel que o `install.sh` leva para outro workspace.
+
+**Regra:** editar sempre em `docs/`. Copiar para `files/docs/` antes de release ou install.
+O `install.sh` copia de `files/` para o destino, entao `files/docs/` deve estar sincronizado antes de instalar.
 
 ## O que e obrigatorio
 Para o kit ser util de forma real, o repo de destino deve ter:

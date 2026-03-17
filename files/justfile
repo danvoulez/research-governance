@@ -63,23 +63,198 @@ sync-experiment-docs:
 # --- Run validation ---
 
 run-completeness CYCLE_DIR:
-  @echo "=== Run completeness check for {{CYCLE_DIR}} ==="
-  @echo ""
-  @echo "## Level 1 — Artifact completeness"
-  @test -f {{CYCLE_DIR}}/../../benchmarks/manifests/*.json 2>/dev/null && echo "  [ok] manifest found" || echo "  [FAIL] no manifest found"
-  @ls {{CYCLE_DIR}}/raw_output* 2>/dev/null && echo "  [ok] raw output found" || echo "  [warn] no raw output in cycle dir"
-  @ls {{CYCLE_DIR}}/*report* {{CYCLE_DIR}}/*REPORT* 2>/dev/null && echo "  [ok] report found" || echo "  [warn] no report in cycle dir"
-  @echo ""
-  @echo "## Level 2 — Method completeness"
-  @test -f {{CYCLE_DIR}}/CYCLE_README.md && echo "  [ok] CYCLE_README exists" || echo "  [FAIL] no CYCLE_README.md"
-  @echo ""
-  @echo "## Level 3 — Comparison readiness"
-  @test -f {{CYCLE_DIR}}/COMPARATIVE_NOTE.auto.md && echo "  [ok] comparative note exists" || echo "  [info] no comparative note yet"
-  @test -f {{CYCLE_DIR}}/STATUS_MATRIX.auto.md && echo "  [ok] status matrix exists" || echo "  [info] no status matrix yet"
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "=== Run completeness check for {{CYCLE_DIR}} ==="
+  echo ""
+
+  l1_fails=0
+  l1_warns=0
+  l2_fails=0
+  l2_caveats=0
+  l3_blocks=0
+  l3_caveats=0
+
+  echo "## Level 1 — Artifact completeness"
+  echo "   (RUN_CONTRACT: minimum artifacts for a valid run)"
+  echo ""
+
+  # manifest
+  if compgen -G "benchmarks/manifests/*.json" > /dev/null 2>&1; then
+    echo "  [ok] manifest found"
+  else
+    echo "  [FAIL] no manifest found in benchmarks/manifests/"
+    l1_fails=$((l1_fails + 1))
+  fi
+
+  # raw output
+  if compgen -G "{{CYCLE_DIR}}/raw_output*" > /dev/null 2>&1 || compgen -G "{{CYCLE_DIR}}/raw-output*" > /dev/null 2>&1; then
+    echo "  [ok] raw output found"
+  else
+    echo "  [FAIL] no raw output in {{CYCLE_DIR}}/"
+    l1_fails=$((l1_fails + 1))
+  fi
+
+  # report
+  if compgen -G "{{CYCLE_DIR}}/*report*" > /dev/null 2>&1 || compgen -G "{{CYCLE_DIR}}/*REPORT*" > /dev/null 2>&1; then
+    echo "  [ok] report found"
+  else
+    echo "  [FAIL] no report in {{CYCLE_DIR}}/"
+    l1_fails=$((l1_fails + 1))
+  fi
+
+  # version registry
+  if [ -f "benchmarks/version_registry.json" ]; then
+    echo "  [ok] version_registry.json exists"
+  else
+    echo "  [FAIL] no benchmarks/version_registry.json"
+    l1_fails=$((l1_fails + 1))
+  fi
+
+  # checklist and canonical check
+  if [ -f "{{CYCLE_DIR}}/PRE_CYCLE_CHECKLIST.auto.md" ]; then
+    echo "  [ok] PRE_CYCLE_CHECKLIST.auto.md exists"
+  else
+    echo "  [warn] no PRE_CYCLE_CHECKLIST.auto.md"
+    l1_warns=$((l1_warns + 1))
+  fi
+
+  if [ -f "{{CYCLE_DIR}}/CANONICAL_COMPLETENESS_CHECK.auto.md" ]; then
+    echo "  [ok] CANONICAL_COMPLETENESS_CHECK.auto.md exists"
+  else
+    echo "  [warn] no CANONICAL_COMPLETENESS_CHECK.auto.md"
+    l1_warns=$((l1_warns + 1))
+  fi
+
+  echo ""
+  if [ $l1_fails -eq 0 ]; then
+    echo "  Level 1 result: PASS"
+    [ $l1_warns -gt 0 ] && echo "  ($l1_warns warnings)"
+  else
+    echo "  Level 1 result: FAIL ($l1_fails missing artifacts)"
+  fi
+
+  echo ""
+  echo "## Level 2 — Method completeness"
+  echo "   (session log, patch ledger, cycle readme, methodology context)"
+  echo ""
+
+  # cycle readme
+  if [ -f "{{CYCLE_DIR}}/CYCLE_README.md" ]; then
+    echo "  [ok] CYCLE_README.md exists"
+    # check if frozen contract is filled
+    if grep -q "frozen_now:" "{{CYCLE_DIR}}/CYCLE_README.md" 2>/dev/null; then
+      echo "  [ok] frozen contract section present"
+    else
+      echo "  [caveat] frozen contract section missing or empty"
+      l2_caveats=$((l2_caveats + 1))
+    fi
+  else
+    echo "  [FAIL] no CYCLE_README.md"
+    l2_fails=$((l2_fails + 1))
+  fi
+
+  # session logs
+  if [ -d "{{CYCLE_DIR}}/sessions" ] && compgen -G "{{CYCLE_DIR}}/sessions/*.md" > /dev/null 2>&1; then
+    count=$(ls -1 "{{CYCLE_DIR}}/sessions/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    echo "  [ok] $count session log(s) found"
+  else
+    echo "  [caveat] no session logs in {{CYCLE_DIR}}/sessions/"
+    l2_caveats=$((l2_caveats + 1))
+  fi
+
+  # patch ledger
+  if [ -d "{{CYCLE_DIR}}/patches" ] && compgen -G "{{CYCLE_DIR}}/patches/*.md" > /dev/null 2>&1; then
+    count=$(ls -1 "{{CYCLE_DIR}}/patches/"*.md 2>/dev/null | wc -l | tr -d ' ')
+    echo "  [ok] $count patch ledger(s) found"
+  else
+    echo "  [info] no patch ledgers (ok if no code was changed)"
+  fi
+
+  # experiment charter and methodology
+  if [ -f "{{CYCLE_DIR}}/EXPERIMENT_CHARTER.md" ]; then
+    echo "  [ok] EXPERIMENT_CHARTER.md exists"
+  else
+    echo "  [caveat] no EXPERIMENT_CHARTER.md"
+    l2_caveats=$((l2_caveats + 1))
+  fi
+
+  if [ -f "{{CYCLE_DIR}}/METHODOLOGY_SPEC.md" ]; then
+    echo "  [ok] METHODOLOGY_SPEC.md exists"
+  else
+    echo "  [caveat] no METHODOLOGY_SPEC.md"
+    l2_caveats=$((l2_caveats + 1))
+  fi
+
+  echo ""
+  if [ $l2_fails -eq 0 ] && [ $l2_caveats -eq 0 ]; then
+    echo "  Level 2 result: PASS"
+  elif [ $l2_fails -eq 0 ]; then
+    echo "  Level 2 result: PASS WITH CAVEATS ($l2_caveats caveats)"
+  else
+    echo "  Level 2 result: FAIL ($l2_fails missing, $l2_caveats caveats)"
+  fi
+
+  echo ""
+  echo "## Level 3 — Comparison readiness"
+  echo "   (comparative note, status matrix, baseline identified)"
+  echo ""
+
+  # comparative note
+  if [ -f "{{CYCLE_DIR}}/COMPARATIVE_NOTE.auto.md" ] || [ -f "{{CYCLE_DIR}}/COMPARATIVE_NOTE.md" ]; then
+    echo "  [ok] comparative note exists"
+  else
+    echo "  [block] no comparative note — comparison not possible yet"
+    l3_blocks=$((l3_blocks + 1))
+  fi
+
+  # status matrix
+  if [ -f "{{CYCLE_DIR}}/STATUS_MATRIX.auto.md" ]; then
+    echo "  [ok] STATUS_MATRIX.auto.md exists"
+  else
+    echo "  [block] no STATUS_MATRIX.auto.md"
+    l3_blocks=$((l3_blocks + 1))
+  fi
+
+  # decision note
+  if [ -f "{{CYCLE_DIR}}/DECISION_NOTE.auto.md" ] || [ -f "{{CYCLE_DIR}}/DECISION_NOTE.md" ]; then
+    echo "  [ok] decision note exists"
+  else
+    echo "  [caveat] no decision note yet"
+    l3_caveats=$((l3_caveats + 1))
+  fi
+
+  # verify trace
+  if [ -f "{{CYCLE_DIR}}/VERIFY_STATUS.auto.md" ]; then
+    echo "  [ok] VERIFY_STATUS.auto.md exists"
+  else
+    echo "  [caveat] no verify trace"
+    l3_caveats=$((l3_caveats + 1))
+  fi
+
+  echo ""
+  if [ $l3_blocks -eq 0 ] && [ $l3_caveats -eq 0 ]; then
+    echo "  Level 3 result: PASS"
+  elif [ $l3_blocks -eq 0 ]; then
+    echo "  Level 3 result: PASS WITH CAVEATS ($l3_caveats caveats)"
+  else
+    echo "  Level 3 result: FAIL ($l3_blocks blocking, $l3_caveats caveats)"
+  fi
+
+  echo ""
+  echo "=== Summary ==="
+  total_fails=$((l1_fails + l2_fails + l3_blocks))
+  total_caveats=$((l1_warns + l2_caveats + l3_caveats))
+  if [ $total_fails -eq 0 ] && [ $total_caveats -eq 0 ]; then
+    echo "  Overall: PASS"
+  elif [ $total_fails -eq 0 ]; then
+    echo "  Overall: PASS WITH CAVEATS ($total_caveats total caveats)"
+  else
+    echo "  Overall: FAIL ($total_fails failures, $total_caveats caveats)"
+  fi
 
 run-contract-check CYCLE_DIR:
-  @echo "Checking run contract for {{CYCLE_DIR}}..."
-  @echo "See docs/RUN_CONTRACT.md for full requirements."
+  @echo "Run contract check (see docs/RUN_CONTRACT.md)"
   @echo ""
   @just run-completeness {{CYCLE_DIR}}
 
