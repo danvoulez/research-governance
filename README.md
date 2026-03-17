@@ -1,4 +1,4 @@
-# PESQUISA-PROFISSIONAL-2026-03-17
+# PESQUISA-PROFISSIONAL
 
 **This package is not a benchmark. It is the governance layer around benchmarks.**
 
