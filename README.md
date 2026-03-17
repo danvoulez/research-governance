@@ -1,65 +1,86 @@
-# PESQUISA-PROFISSIONAL
+# Research Governance Kit
 
-**This package is not a benchmark. It is the governance layer around benchmarks.**
+**Run experiments with agents. Keep humans in control.**
 
-Pacote congelado com o bloco reutilizavel mais maduro da infraestrutura de pesquisa governada construida no workspace.
-
-Este pacote **nao** substitui harness, **nao** impoe um unico executor, e **nao** automatiza decisao metodologica final.
-
-Ele organiza:
-- **freeze** de manifests e dimensoes
-- **comparacao** governada entre runs
-- **rastreabilidade** de sessoes, patches e artefatos
-- **disciplina** de ciclo com papeis explicitos
+This is a governance layer for code experiments — not a benchmark tool, not a test harness, not a CI pipeline. It sits *around* those things and makes sure every cycle is traceable, every comparison is honest, and every decision has a paper trail.
 
 ---
 
-## Regra fundamental de naming
+## Why this exists
 
-- `.auto.md` = gerado automaticamente. So pode conter fatos extraidos de artefatos, resumos estruturais e status operacional. Nao pode inferir causalidade nem promover recomendacao final.
-- `.md` = consolidado por humano. Pode conter interpretacao, conclusao, mudanca de direcao e decisao metodologica.
+Most teams running experiments with LLM agents hit the same wall: the agent can execute, but nobody tracks *what changed*, *why it changed*, or *whether the comparison is still valid*.
 
-Draft automatico nao substitui revisao humana. Promover `.auto.md` para `.md` final exige aprovacao humana explicita.
+This kit solves that. It gives you:
+
+- **Frozen manifests** — lock your experiment parameters before running, so results are comparable
+- **Governed comparisons** — know exactly when a before/after comparison is valid and when it isn't
+- **Agent session logs** — full trace of what the agent did, what it touched, what it escalated
+- **Patch ledgers** — every code change tied to a hypothesis, a dimension, and a methodological impact
+- **Run lifecycle** — formal states (collected, validated, compared, triaged, frozen) with clear promotion rules
+- **Human-agent role separation** — agents operate, humans decide; the boundary is explicit
+
+## Who this is for
+
+- Researchers running systematic experiments in Rust workspaces
+- Teams using LLM agents for code tasks who need auditability
+- Anyone who wants experiment governance without building it from scratch
+
+## How it works
+
+1. Install the kit into your workspace (`install.sh`)
+2. Point your LLM agent at `AGENTS.md` — it knows what to do
+3. Open cycles, run experiments, freeze results
+4. The kit generates `.auto.md` artifacts; humans promote them to `.md` when ready
+
+The agent handles the bureaucracy. The human keeps the methodology honest.
 
 ---
 
-## O que este pacote contem
-- documentacao de uso e reuso
-- politicas de papeis, guardrails e mudanca de codigo
-- templates de sessao, patch e ciclo
-- contrato de execucao de run
-- politica de comparacao
-- lifecycle de run
-- metadados de software
-- atalhos de operacao via `just`
+## What's in the box
 
-## Arquivos principais
-- `AGENTS.md` — **entry point para LLM agents** (leia primeiro)
-- `COMO_INSTALAR_E_USAR.md`
-- `STATUS_DE_MODULARIDADE.md`
-- `KIT_CONTENTS.md`
-- `KIT_ROADMAP.md`
-- `install.sh`
-- `docs/policies/`
-- `docs/experiments/TEMPLATE_FAMILY_v1/`
-- `docs/RUST_EXPERIMENT_LOOP.md`
-- `docs/INTEROP_MAPPING.md`
-- `docs/RUN_CONTRACT.md`
-- `docs/COMPARISON_POLICY.md`
-- `docs/RUN_LIFECYCLE.md`
-- `docs/COMPLETENESS_LEVELS.md`
-- `docs/EXECUTOR_CONTRACT.md`
-- `files/`
+| Area | What you get |
+|------|-------------|
+| **Policies** | Agent/human roles, guardrails, code change classification |
+| **Templates** | Session logs, patch ledgers, cycle READMEs, status matrices |
+| **Contracts** | Run contract, executor contract, comparison policy |
+| **Lifecycle** | Run states, completeness levels (3-tier), valid transitions |
+| **Automation** | `justfile` recipes for every ritual, `install.sh` for bootstrap |
+| **Interop** | PROV-like fields, RO-Crate alignment, CodeMeta metadata |
 
-## Posicionamento
-O valor principal deste pacote nao esta em executar benchmarks sozinho.
-O valor principal esta em tornar o ritual de experimentacao mais auditavel, comparavel e governado.
+## Key files
 
-Este kit e modular o bastante para reuso forte em workspaces Rust parecidos, especialmente quando voce quer:
-- ciclos versionados
-- manifests congelados
-- drafts de governance notes
-- checklist e canonical check automaticos
-- sync de status/index
-- verify trace por ciclo
-- operacao com agentes dentro de guardrails explicitos
+| File | Purpose |
+|------|---------|
+| `AGENTS.md` | **Start here if you're an LLM agent** |
+| `COMO_INSTALAR_E_USAR.md` | Installation and usage guide |
+| `KIT_CONTENTS.md` | Full inventory of what ships |
+| `install.sh` | Bootstrap script for new workspaces |
+| `docs/policies/` | Role separation, guardrails, change policy |
+| `docs/RUN_CONTRACT.md` | Minimum artifacts for a valid run |
+| `docs/COMPARISON_POLICY.md` | When comparisons are valid |
+| `docs/RUN_LIFECYCLE.md` | Formal run states and transitions |
+| `docs/COMPLETENESS_LEVELS.md` | 3-tier validation: artifact, method, comparison |
+| `docs/EXECUTOR_CONTRACT.md` | Interface for plugging in any executor |
+| `files/` | Installable copy of templates, scripts, recipes |
+
+---
+
+## Naming rule
+
+- **`.auto.md`** = generated by automation. Facts only — no interpretation, no recommendations.
+- **`.md`** = consolidated by a human. May contain conclusions, direction changes, and final calls.
+
+Promoting `.auto.md` to `.md` always requires explicit human approval.
+
+---
+
+## Positioning
+
+This kit does **not** run your benchmarks.
+This kit does **not** choose your methodology.
+This kit does **not** make decisions for you.
+
+This kit makes sure that when you *do* run experiments, the process is auditable, the comparisons are honest, and the agent stays inside its lane.
+
+> *Research governance kit for Rust workspaces with agents.*
+> *v1 — publishable for technical peers.*
